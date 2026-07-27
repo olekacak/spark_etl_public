@@ -50,7 +50,6 @@ def _env(name: str, default: str) -> str:
 
 spark = (
     SparkSession.builder.appName("MetadataMigration")
-    .config("spark.jars", "/tmp/mysql-connector.jar,/tmp/mssql-connector.jar")
     .getOrCreate()
 )
 
