@@ -1,24 +1,2 @@
 .env
 spark-etl/run_etl.sh
-
-
-
-
-# 1. Recreate arms DB
-mysql -h 127.0.0.1 -u root -e "DROP DATABASE IF EXISTS arms; CREATE DATABASE arms;"
-mysql -h 127.0.0.1 -u root arms < control-table/ddl/arms.sql
-
-# 2. Recreate finalUsers in SQL Server
-sqlcmd -S localhost -U sa -P 'P@ssw0rd' -i control-table/ddl/finalUsers.sql -C
-
-# 3. Seed control tables
-sed 's/target_analytics/arms/g' control-table/ddl/ddl | mysql -h 127.0.0.1 -u root arms
-sed 's/target_analytics/arms/g' control-table/ddl/migration_control_202607030018.sql | mysql -h 127.0.0.1 -u root arms
-sed 's/target_analytics/arms/g' control-table/ddl/migration_source_tables_202607030018.sql | mysql -h 127.0.0.1 -u root arms
-sed 's/target_analytics/arms/g' control-table/ddl/migration_joins_202607030018.sql | mysql -h 127.0.0.1 -u root arms
-sed 's/target_analytics/arms/g' control-table/ddl/migration_column_mapping_202607030018.sql | mysql -h 127.0.0.1 -u root arms
-
-# 4. Run ETL
-spark-submit \
-  --packages com.mysql:mysql-connector-j:8.3.0,com.microsoft.sqlserver:mssql-jdbc:12.6.1.jre11 \
-  control-table/spark-control-etl.py
